@@ -29,14 +29,14 @@
       }
     },
     methods: {
-      deleteTask(id){
+      deleteTask(name){
         this.tasks = this.tasks.filter((task) => {
-            return task.id !== id
+            return task.name !== name
         })
       },
-      toggleReminder(id){
+      toggleReminder(name){
         this.tasks.forEach((task) => {
-          task.id === id ? task.reminder = !task.reminder:""  
+          task.name === name ? task.reminder = !task.reminder:""  
         })
       },
       addTask(newTask){
@@ -51,13 +51,11 @@
     created(){
       this.tasks = [
         {
-          id: 1,
           name: 'FRC-Project due date',
           date: '2/19/2022',
           reminder: true
         },
         {
-          id: 2,
           name: 'Science-Fair report',
           date: '2/28/2022',
           reminder: true

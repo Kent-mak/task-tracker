@@ -11,20 +11,23 @@ function readTaskFile(req, res, next){
 
 function saveNewTask(req, res, next){
     
-    console.log(`Saving new task:`);
-    console.log(req.body);
-    let tasksArr = JSON.parse(fs.readFileSync(taskFilePath));
-    // console.log(`tasksArr: `);
-    // console.log(tasksArr);
     let newTaskObj = req.body;
-    // console.log(`newTask: `);
-    // console.log(newTaskObj);
+    let tasksArr = JSON.parse(fs.readFileSync(taskFilePath));
+    let taskNameArr = tasksArr.map((task) =>{
+        return task.name;
+    });
 
-    tasksArr.push(newTaskObj);
-    console.log(tasksArr);
-    console.log(JSON.stringify(tasksArr, null, 2));
-    fs.writeFileSync(taskFilePath, JSON.stringify(tasksArr, null, 2));
+    if(taskNameArr.includes(newTaskObj.name)){
+        res.send('Task already exist');
+    }else{
+        console.log(`Saving new task:`);
+        console.log(req.body);
 
+        tasksArr.push(newTaskObj);
+        console.log(tasksArr);
+        console.log(JSON.stringify(tasksArr, null, 2));
+        fs.writeFileSync(taskFilePath, JSON.stringify(tasksArr, null, 2));
+    }
 
     next();
 }

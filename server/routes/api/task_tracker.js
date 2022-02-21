@@ -14,8 +14,7 @@ router.get('/', (req,res) => {
 
 // post added task
 router.post('/',saveNewTask, (req,res) => {
-
-    res.send(req.body);
+    res.send();
 });
 
 // delete task
