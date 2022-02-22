@@ -10,12 +10,7 @@
     "reminder": true
   },
   {
-    "name": "New Task",
-    "date": "3/31/2022",
-    "reminder": true
-  },
-  {
-    "name": "New Task 2",
+    "name": "New Task ",
     "date": "3/31/2022",
     "reminder": false
   }
