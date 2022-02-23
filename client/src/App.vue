@@ -32,10 +32,15 @@
       }
     },
     methods: {
-      deleteTask(name){
-        this.tasks = this.tasks.filter((task) => {
-            return task.name !== name;
-        })
+      async deleteTask(name){
+        try{
+          const res = service.deleteData(name);
+          console.log((await res).statusText);
+
+          this.tasks = await service.getData();
+        }catch(err){
+          console.log(err);
+        }
       },
       toggleReminder(name){
         this.tasks.forEach((task) => {
@@ -45,9 +50,9 @@
       async addTask(newTask){
         this.tasks.push(newTask)
         try{
-          const res = service.addNewTask(newTask);
-          console.log((await res).status);
-          this.tasks = await service.getTasks();
+          const res = service.addData(newTask);
+          console.log((await res).statusText);
+          this.tasks = await service.getData();
         }catch(err){
           console.log(err);
         }
@@ -59,7 +64,7 @@
     },
     async created(){
       try{
-        this.tasks = await service.getTasks();
+        this.tasks = await service.getData();
       }catch(err){
         this.error = err;
       }

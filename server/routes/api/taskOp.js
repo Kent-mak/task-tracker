@@ -53,7 +53,7 @@ async function deleteTask(name){
     console.log(name);
     let tasksArr = await readTaskFile();
     const filteredTaskArr = tasksArr.filter((item) => {
-        console.log(item.name);
+        // console.log(item.name);
         return item.name !== name;
     });
     console.log(filteredTaskArr);
