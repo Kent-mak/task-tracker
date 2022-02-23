@@ -26,9 +26,21 @@ router.post('/', async (req,res) => {
 });
 
 // delete task
-router.delete('/:name', (req, res) =>{
-
-    res.status(200).send();
+router.delete('/:name', async (req, res) =>{
+    const taskName = req.params.name;
+    const newTaskExist = await taskExist(taskName);
+    if(newTaskExist){
+        try{
+            await deleteTask(taskName);
+            res.status(200).send();
+        }catch(err){
+            res.send(err);
+        }
+    }else{
+        res.send(`Task doesn't exist`);
+    }
+        
+        
 })
 
 module.exports = router;

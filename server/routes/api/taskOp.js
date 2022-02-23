@@ -50,11 +50,14 @@ async function taskExist(taskName){
 }
 
 async function deleteTask(name){
+    console.log(name);
     let tasksArr = await readTaskFile();
-    tasksArr.filter((item) => {
+    const filteredTaskArr = tasksArr.filter((item) => {
+        console.log(item.name);
         return item.name !== name;
     });
-    
+    console.log(filteredTaskArr);
+    fs.writeFileSync(taskFilePath, JSON.stringify(filteredTaskArr, null, 2));
 }
 
     
