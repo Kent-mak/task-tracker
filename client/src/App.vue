@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div class="container">
     <HeaderItem  @toggle-add-task="toggleAddTask" title="Task Tracker" :showAddTask="isShown" />
@@ -15,6 +16,7 @@
   import HeaderItem from './components/Header.vue'
   import TasksItem from './components/Tasks.vue'
   import AddTask from './components/AddTask.vue'
+  import service from './service'
   export default {
     name: 'App',
     components: {
@@ -26,41 +28,42 @@
       return{
         tasks: [],
         isShown: false,
+        error:''
       }
     },
     methods: {
       deleteTask(name){
         this.tasks = this.tasks.filter((task) => {
-            return task.name !== name
+            return task.name !== name;
         })
       },
       toggleReminder(name){
         this.tasks.forEach((task) => {
-          task.name === name ? task.reminder = !task.reminder:""  
+          task.name === name ? task.reminder = !task.reminder:""  ;
         })
       },
-      addTask(newTask){
-        // this.tasks.push(newTask)
-        console.log(newTask)
+      async addTask(newTask){
+        this.tasks.push(newTask)
+        try{
+          const res = service.addNewTask(newTask);
+          console.log((await res).status);
+          this.tasks = await service.getTasks();
+        }catch(err){
+          console.log(err);
+        }
       },
       toggleAddTask(){
-        this.isShown = !this.isShown
-        console.log(this.isShown)
+        this.isShown = !this.isShown;
+        console.log(this.isShown);
       },
     },
-    created(){
-      this.tasks = [
-        {
-          name: 'FRC-Project due date',
-          date: '2/19/2022',
-          reminder: true
-        },
-        {
-          name: 'Science-Fair report',
-          date: '2/28/2022',
-          reminder: true
-        }
-      ]
+    async created(){
+      try{
+        this.tasks = await service.getTasks();
+      }catch(err){
+        this.error = err;
+      }
+      
     }
   }
 
