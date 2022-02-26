@@ -60,6 +60,71 @@ async function deleteTask(name){
     fs.writeFileSync(taskFilePath, JSON.stringify(filteredTaskArr, null, 2));
 }
 
+function toDate (date){
+    // yyyy/dd/mm   
+    let year = date.slice(0,4);
+    let month = date.slice(5,7);
+    let day = date.slice(-2)
+    year = parseInt(year,10);
+    month = parseInt(month,10);
+    day = parseInt(day,10);
+    // console.log([year,month,day]);
+    let dateObj = new Date(year,month-1,day)
+    return dateObj;
+}
+
+function partition(front, end, arr){
+    let i = front;
+    let pivot = toDate(arr[end].date)
+
+    for( let j = front; j < end; j++){
+        let date = toDate(arr[j].date);
+        // console.log(j);
+        // console.log(date <= pivot );
+        if(date <= pivot){
+            [arr[i],arr[j]] = [arr[j], arr[i]];
+            // console.log(arr);
+            i++;
+            // console.log(i);
+        }
+    }
+    // console.log('fin');
+    // console.log(`i: ${i}`);    
+    [arr[i],arr[end]] = [arr[end],arr[i]];
     
 
-module.exports = { deleteTask, taskExist ,readTaskFile, saveNewTask}
+    return [arr,i];
+}
+
+function quickSort(Arr, front, end){
+    if(front < end){
+        let pArr = partition(front,end,Arr);
+        Arr = pArr[0];
+        // console.log(Arr)
+        let pivot = pArr[1];
+        // console.log(`pivot: ${pivot}`)
+        quickSort(Arr, front, pivot-1);
+        // console.log(Arr)
+        quickSort(Arr, pivot + 1, end);
+
+    }
+}
+
+function sortTasks (taskArr){
+    quickSort(taskArr, 0, taskArr.length-1);
+    
+    return taskArr;
+}
+
+async function saveModification(name){
+    let tasksArr = await readTaskFile();
+    tasksArr.forEach((task) => {
+        task.name === name ? task.reminder = !task.reminder:""  ;
+    })
+    fs.writeFileSync(taskFilePath, JSON.stringify(tasksArr, null, 2));
+
+}
+
+    
+
+module.exports = {toDate,sortTasks, deleteTask, taskExist ,readTaskFile, saveNewTask, saveModification}

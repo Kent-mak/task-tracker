@@ -42,19 +42,31 @@
           console.log(err);
         }
       },
-      toggleReminder(name){
-        this.tasks.forEach((task) => {
+      async toggleReminder(name){
+        try{
+          const res = await service.saveModData(name);
+          console.log((await res).statusText);
+          this.tasks.forEach((task) => {
           task.name === name ? task.reminder = !task.reminder:""  ;
-        })
+          })
+        }catch(err){
+          console.log(err);
+          alert('error occured');
+        }
+        
+        
+
       },
       async addTask(newTask){
         this.tasks.push(newTask)
         try{
           const res = service.addData(newTask);
+          alert((await res).data);
           console.log((await res).statusText);
           this.tasks = await service.getData();
         }catch(err){
           console.log(err);
+          alert('error occured');
         }
       },
       toggleAddTask(){

@@ -25,6 +25,10 @@ class service {
         return await axios.post(url, newTask);
     }
 
+    static async saveModData(name){
+        return await axios.post(`${url}${name}`);
+    }
+
     // delete
     static async deleteData(name){
         return await axios.delete(`${url}${name}`);

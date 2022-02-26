@@ -1,6 +1,14 @@
 const express = require('express');
 const fs = require('fs');
-const { deleteTask ,taskExist, readTaskFile, saveNewTask} = require('./taskOp')
+const { 
+    toDate,
+    sortTasks ,
+    deleteTask ,
+    taskExist, 
+    readTaskFile, 
+    saveNewTask, 
+    saveModification
+} = require('./taskOp')
 
 const router = express.Router();
 
@@ -8,19 +16,33 @@ const router = express.Router();
 
 // get tasks file
 router.get('/', async (req,res) => {
-    const taskFile = await readTaskFile();
+    let taskFile = await readTaskFile();
+    taskFile = sortTasks(taskFile);
     res.json(taskFile);
 });
 
 // post added task
 router.post('/', async (req,res) => {
     const newTask = req.body
+    const newTaskDate = toDate(newTask.date);
+    const now = new Date();
     const newTaskExist = await taskExist(newTask.name);
-    if(newTaskExist){
-        res.send('Task Already Exist');
+    if(newTaskExist || newTaskDate < now ){
+        res.status(400).send('Invalid Task');
     }else{
         await saveNewTask(newTask);
-        res.status(201).send();
+        res.status(201).send('Task Added');
+    }
+    
+});
+
+router.post('/:name',async (req, res) => {
+    const taskName  = req.params.name;
+    try{
+        await saveModification(taskName);
+        res.status(200).send();
+    }catch(err){
+        res.send(err);
     }
     
 });
